@@ -1,3 +1,4 @@
+@import url('/fonts/fonts.css');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -18,14 +19,15 @@
   .outline-theme-blue {
     @apply hover:opacity-80 hover:outline-[color:var(--theme-blue)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--theme-blue)];
   }
-  .within-outline-theme-purple{
+  .within-outline-theme-purple {
     @apply focus-within:outline focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-[color:var(--theme-purple)] hover:opacity-80 hover:outline-[color:var(--theme-purple)];
   }
 }
 
 :root {
-  --theme-purple: '#5d52d9';
-  --theme-blue: '#4fc5eb';
+  --theme-purple: #5d52d9;
+  --theme-blue: #4fc5eb;
+
   --top-nav-bar-height: 3.5rem;
   --resume-control-bar-height: 3rem;
   --resume-padding: 1.5rem;

@@ -1,6 +1,8 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import type { PayloadAction } from '@reduxjs/toolkit';
 
-import { GeneralSetting } from './settingsSlice';
+import { createSlice } from '@reduxjs/toolkit';
+
+import { RootState } from './store';
 
 export interface Settings {
   themeColor: string;
@@ -8,14 +10,14 @@ export interface Settings {
   fontSize: string;
   documentSize: string;
   formToShow: {
-    workExperinces: boolean;
+    workExperiences: boolean;
     educations: boolean;
     projects: boolean;
     skills: boolean;
     custom: boolean;
   };
-  fromToHeading: {
-    workExperinces: string;
+  formToHeading: {
+    workExperiences: string;
     educations: string;
     projects: string;
     skills: string;
@@ -34,33 +36,34 @@ export type ShowForm = keyof Settings['formToShow'];
 export type FormWithBulletPoints = keyof Settings['showBulletPoints'];
 export type GeneralSetting = Exclude<
   keyof Settings,
-  'formToShow' | 'fromToHeading' | 'formsOrder' | 'showBulletPoint'
+  'formToShow' | 'formToHeading' | 'formsOrder' | 'showBulletPoints'
 >;
+
 export const DEFAULT_THEME_COLOR = '#38bdf8';
-export const DEFAULT_FONT_FAMILY = 'Roboto';
+export const DEAFULT_FONT_FAMILY = 'Roboto';
 export const DEFAULT_FONT_SIZE = '11';
 export const DEFAULT_FONT_COLOR = '#171717';
 
 export const initialSettings: Settings = {
   themeColor: DEFAULT_THEME_COLOR,
-  fontFamily: DEFAULT_FONT_FAMILY,
+  fontFamily: DEAFULT_FONT_FAMILY,
   fontSize: DEFAULT_FONT_SIZE,
   documentSize: 'Letter',
   formToShow: {
-    workExperinces: true,
+    workExperiences: true,
     educations: true,
     projects: true,
     skills: true,
     custom: true,
   },
-  fromToHeading: {
-    workExperinces: 'WORK EXPERINCE',
-    educations: 'EDUCAITON',
+  formToHeading: {
+    workExperiences: 'WORK EXPERIENCE',
+    educations: 'EDUCATION',
     projects: 'PROJECT',
     skills: 'SKILLS',
-    custom: 'CUSTOM SECTIONS',
+    custom: 'CUSTOM SECTION',
   },
-  formsOrder: ['workExperinces', 'educations', 'projects', 'skills', 'custom'],
+  formsOrder: ['workExperiences', 'educations', 'projects', 'skills', 'custom'],
   showBulletPoints: {
     educations: true,
     projects: true,
@@ -70,7 +73,7 @@ export const initialSettings: Settings = {
 };
 
 export const settingsSlice = createSlice({
-  name: 'settings ',
+  name: 'settings',
   initialState: initialSettings,
   reducers: {
     changeSettings: (
@@ -80,5 +83,79 @@ export const settingsSlice = createSlice({
       const { field, value } = action.payload;
       draft[field] = value;
     },
+    changeShowForm: (
+      draft,
+      action: PayloadAction<{ field: ShowForm; value: boolean }>,
+    ) => {
+      const { field, value } = action.payload;
+      draft.formToShow[field] = value;
+    },
+    changeFormHeading: (
+      draft,
+      action: PayloadAction<{ field: ShowForm; value: string }>,
+    ) => {
+      const { field, value } = action.payload;
+      draft.formToHeading[field] = value;
+    },
+    changeFormOrder: (
+      draft,
+      action: PayloadAction<{ form: ShowForm; type: 'up' | 'down' }>,
+    ) => {
+      const { form, type } = action.payload;
+      const lastIdx = draft.formsOrder.length - 1;
+      const pos = draft.formsOrder.indexOf(form);
+      const newPos = type === 'up' ? pos - 1 : pos + 1;
+      const swapFormOrder = (idx1: number, idx2: number) => {
+        const temp = draft.formsOrder[idx1];
+        draft.formsOrder[idx1] = draft.formsOrder[idx2];
+        draft.formsOrder[idx2] = temp;
+      };
+      if (newPos >= 0 && newPos <= lastIdx) {
+        swapFormOrder(pos, newPos);
+      }
+    },
+    changeShowBulletPoints: (
+      draft,
+      action: PayloadAction<{ field: FormWithBulletPoints; value: boolean }>,
+    ) => {
+      const { field, value } = action.payload;
+      draft['showBulletPoints'][field] = value;
+    },
+    setSettings: (draft, action: PayloadAction<Settings>) => {
+      return action.payload;
+    },
   },
 });
+
+export const {
+  changeSettings,
+  changeFormHeading,
+  changeFormOrder,
+  changeShowForm,
+  changeShowBulletPoints,
+  setSettings,
+} = settingsSlice.actions;
+
+export const selectSettings = (state: RootState) => state.settings;
+export const selectThemeColor = (state: RootState) => state.themeColor;
+
+export const selectFormToShow = (state: RootState) => state.settings.formToShow;
+export const selectShowByForm = (form: ShowForm) => (state: RootState) =>
+  state.settings.formToShow[form];
+
+export const selectFormToHeading = (state: RootState) =>
+  state.settings.formToHeading;
+export const selectHeadingByForm = (form: ShowForm) => (state: RootState) =>
+  state.settings.formToHeading[form];
+
+export const selectFormOrder = (state: RootState) => state.settings.formsOrder;
+export const selectIsFirstForm = (form: ShowForm) => (state: RootState) =>
+  state.settings.formsOrder[0] === form;
+export const selectIsLastForm = (form: ShowForm) => (state: RootState) =>
+  state.settings.formsOrder[state.settings.formsOrder.length - 1] === form;
+
+export const selectShowBulletPoints =
+  (form: FormWithBulletPoints) => (state: RootState) =>
+    state.settings.showBulletPoints[form];
+
+export default settingsSlice.reducer;

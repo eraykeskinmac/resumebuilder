@@ -2,6 +2,7 @@ import type { PayloadAction } from '@reduxjs/toolkit';
 
 import { createSlice } from '@reduxjs/toolkit';
 
+import { ShowForm } from './settingsSlice';
 import {
   FeaturedSkill,
   Resume,
@@ -98,6 +99,63 @@ export const resumeSlice = createSlice({
       const { idx, field, value } = action.payload;
       const workExperince = draft.workExperince[idx];
       workExperince[field] = value as any;
+    },
+    changeEducations: (
+      draft,
+      action: PayloadAction<
+        CreateChangeActionWithDescriptions<ResumeEducation>
+      >,
+    ) => {
+      const { idx, field, value } = action.payload;
+      const education = draft.educations[idx];
+      education[field] = value as any;
+    },
+    changeSkills: (
+      draft,
+      action: PayloadAction<
+        | { field: 'descriptions'; value: string[] }
+        | {
+            field: 'featuredSkills';
+            idx: number;
+            skill: string;
+            rating: number;
+          }
+      >,
+    ) => {
+      const { field } = action.payload;
+      if (field === 'descriptions') {
+        const { value } = action.payload;
+        draft.skills.description = value;
+      } else {
+        const { idx, skill, rating } = action.payload;
+        const featuredSkill = draft.skills.featuredSkills[idx];
+        featuredSkill.skill = skill;
+        featuredSkill.rating = rating;
+      }
+    },
+    changeCustom: (
+      draft,
+      action: PayloadAction<{ field: 'description'; value: string[] }>,
+    ) => {
+      const { value } = action.payload;
+      draft.custom.description = value;
+    },
+    addSectionInForm: (draft, action: PayloadAction<{ form: ShowForm }>) => {
+      const { form } = action.payload;
+      switch (form) {
+        case 'workExperiences': {
+          draft.workExperince.push(structuredClone(initialWorkExperince));
+          return draft;
+        }
+        case 'educations': {
+          draft.educations.push(structuredClone(initialEducation));
+          return draft;
+        }
+        case 'projects': {
+          draft.projects.push(structuredClone(initialProject));
+          return draft;
+        }
+      }
     },
   },
 });

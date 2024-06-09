@@ -7,11 +7,11 @@ export interface ResumeProfile {
   location: string;
 }
 
-export interface ResumeWorkExperince {
+export interface ResumeWorkExperience {
   company: string;
   jobTitle: string;
   date: string;
-  description: string[];
+  descriptions: string[];
 }
 
 export interface ResumeEducation {
@@ -19,13 +19,13 @@ export interface ResumeEducation {
   degree: string;
   date: string;
   gpa: string;
-  description: string[];
+  descriptions: string[];
 }
 
 export interface ResumeProject {
   project: string;
   date: string;
-  description: string[];
+  descriptions: string[];
 }
 
 export interface FeaturedSkill {
@@ -35,16 +35,16 @@ export interface FeaturedSkill {
 
 export interface ResumeSkills {
   featuredSkills: FeaturedSkill[];
-  description: string[];
+  descriptions: string[];
 }
 
 export interface ResumeCustom {
-  description: string[];
+  descriptions: string[];
 }
 
 export interface Resume {
   profile: ResumeProfile;
-  workExperince: ResumeWorkExperince[];
+  workExperiences: ResumeWorkExperience[];
   educations: ResumeEducation[];
   projects: ResumeProject[];
   skills: ResumeSkills;

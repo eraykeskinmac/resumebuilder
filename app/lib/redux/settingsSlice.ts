@@ -1,6 +1,7 @@
 import type { PayloadAction } from '@reduxjs/toolkit';
 
 import { createSlice } from '@reduxjs/toolkit';
+import { act } from 'react-dom/test-utils';
 
 import { RootState } from './store';
 
@@ -129,15 +130,15 @@ export const settingsSlice = createSlice({
 
 export const {
   changeSettings,
+  changeShowForm,
   changeFormHeading,
   changeFormOrder,
-  changeShowForm,
   changeShowBulletPoints,
   setSettings,
 } = settingsSlice.actions;
 
 export const selectSettings = (state: RootState) => state.settings;
-export const selectThemeColor = (state: RootState) => state.themeColor;
+export const selectThemeColor = (state: RootState) => state.settings.themeColor;
 
 export const selectFormToShow = (state: RootState) => state.settings.formToShow;
 export const selectShowByForm = (form: ShowForm) => (state: RootState) =>
@@ -148,7 +149,7 @@ export const selectFormToHeading = (state: RootState) =>
 export const selectHeadingByForm = (form: ShowForm) => (state: RootState) =>
   state.settings.formToHeading[form];
 
-export const selectFormOrder = (state: RootState) => state.settings.formsOrder;
+export const selectFormsOrder = (state: RootState) => state.settings.formsOrder;
 export const selectIsFirstForm = (form: ShowForm) => (state: RootState) =>
   state.settings.formsOrder[0] === form;
 export const selectIsLastForm = (form: ShowForm) => (state: RootState) =>

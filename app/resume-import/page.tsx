@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { getHasUsedAppBefore } from "../lib/redux/local-storage";
+import Link from "next/link";
 
 export default function ImportResume() {
   const [hasUsedAppBefore, setHasUsedAppBefore] = useState(false);
@@ -31,17 +32,45 @@ export default function ImportResume() {
             )}
           </>
         ) : (
-          <div>123</div>
+          <>
+            <OrDivider />
+            <SectionWithHeadingAndCreateButton
+              heading="Dont have a resume yet?"
+              buttonText="Create from scratch"
+            />
+          </>
         )}
       </div>
     </main>
   );
 }
 
-const orDivider = () => {
+const OrDivider = () => (
   <div className="mx-[-2.5rem] flex items-center pb-6 pt-8" aria-hidden="true">
     <div className="flex-grow border-t border-gray-200" />
     <span className="mx-2 mt-[-2px] flex-shrink text-lg text-gray-400">or</span>
     <div className="flex-grow border-t border-gray-200" />
-  </div>;
+  </div>
+);
+
+const SectionWithHeadingAndCreateButton = ({
+  heading,
+  buttonText,
+}: {
+  heading: string;
+  buttonText: string;
+}) => {
+  return (
+    <>
+      <p className="semi-bold text-gray-900">{heading}</p>
+      <div className="mt-5">
+        <Link
+          href="/resume-builder"
+          className="outline-theme-blue rounded-full bg-sky-500 px-6 pb-2 pt-1.5 text-base font-semibold"
+        >
+          {buttonText}
+        </Link>
+      </div>
+    </>
+  );
 };

@@ -19,25 +19,37 @@ export default function ImportResume() {
   return (
     <main>
       <div className="mx-auto mt-14 max-w-3xl rounded-md border border-gray-200 px-10 py-10 text-center shadow-md">
-        {!hasUsedAppBefore ? (
+        {!hasAddedResume ? (
           <>
             <h1 className="text-lg font-semibold text-gray-900">
               Import data from an existing resume
             </h1>
-            <h2>Resume Drop Zone Component</h2>
+            <h2>Resume drop zone component</h2>
             {!hasAddedResume && (
-              <p className="text-gray-600 mt-4">
-                Drag and drop your resume here or click to browse
-              </p>
+              <>
+                <OrDivider />
+                <SectionWithHeadingAndCreateButton
+                  heading="Dont have a resume yet?"
+                  buttonText="Create from scratch"
+                />
+              </>
             )}
           </>
         ) : (
           <>
-            <OrDivider />
-            <SectionWithHeadingAndCreateButton
-              heading="Dont have a resume yet?"
-              buttonText="Create from scratch"
-            />
+            {!hasAddedResume && (
+              <>
+                <SectionWithHeadingAndCreateButton
+                  heading="You have  data saved in browser from prior session"
+                  buttonText="Continue where I left off"
+                />
+                <OrDivider />
+              </>
+            )}
+            <h1 className="font-semibold text-gray-900">
+              Override data with a new resume
+            </h1>
+            <h2>Resume drop Zone component</h2>
           </>
         )}
       </div>

@@ -1,10 +1,10 @@
 const STEPS = [
-  { title: 'Add a resume pdf', text: 'or create from scratch' },
+  { title: "Add a resume pdf", text: "or create from scratch" },
   {
-    title: 'Preview design',
-    text: 'add make edits',
+    title: "Preview design",
+    text: "add make edits",
   },
-  { title: 'Download new resume', text: 'and apply with confidence' },
+  { title: "Download new resume", text: "and apply with confidence" },
 ];
 
 export const Steps = () => {

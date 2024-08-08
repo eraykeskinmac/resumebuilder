@@ -1,8 +1,12 @@
+import { match } from "assert";
 import {
+  hasLetter,
   hasLetterAndIsAllUpperCase,
   isBold,
 } from "../group-lines-into-sections";
 import { FeatureSet, ResumeSectionToLines, TextItem } from "../types";
+import { getTextWithHighestFeatureScore } from "./lib/feature-scoring-system";
+import { getSectionLinesByKeywords } from "./lib/get-section-lines";
 
 // name
 export const matchOnlyLetterSpaceOrPeriod = (item: TextItem) =>
@@ -49,7 +53,107 @@ const NAME_FEATURE_SETS: FeatureSet[] = [
   [has4OrMoreWords, -2],
 ];
 
+const EMAIL_FEATURE_SETS: FeatureSet[] = [
+  [matchEmail, 4, true],
+  [isBold, -1],
+  [hasLetterAndIsAllUpperCase, -1],
+  [hasParenthesis, -4],
+  [hasComma, -4],
+  [hasSlash, -4],
+  [has4OrMoreWords, -4],
+];
+
+const PHONE_FEATURE_SETS: FeatureSet[] = [
+  [matchPhone, 4, true],
+  [hasLetter, -4],
+];
+
+const LOCATION_FEATURE_SETS: FeatureSet[] = [
+  [matchCityAndState, 4, true],
+  [isBold, -1],
+  [hasAt, -4],
+  [hasParenthesis, -3],
+  [hasSlash, -4],
+];
+
+const URL_FEATURES_SETS: FeatureSet[] = [
+  [matchUrl, 4, true],
+  [matchUrlHttpFallback, 3, true],
+  [matchUrlWwwFallback, 3, true],
+  [isBold, -1],
+  [hasAt, -4],
+  [hasParenthesis, -3],
+  [hasComma, -4],
+  [has4OrMoreWords, -4],
+];
+
+const SUMMARY_FEATURE_SETS: FeatureSet[] = [
+  [has4OrMoreWords, 4],
+  [isBold, -1],
+  [hasAt, -4],
+  [hasParenthesis, -3],
+  [matchCityAndState, -4, false],
+];
+
 export const extractProfile = (sections: ResumeSectionToLines) => {
   const lines = sections.profile || [];
   const textItems = lines.flat();
+
+  const [name, nameScores] = getTextWithHighestFeatureScore(
+    textItems,
+    NAME_FEATURE_SETS
+  );
+  const [email, emailScores] = getTextWithHighestFeatureScore(
+    textItems,
+    EMAIL_FEATURE_SETS
+  );
+  const [phone, phoneScores] = getTextWithHighestFeatureScore(
+    textItems,
+    PHONE_FEATURE_SETS
+  );
+  const [locaiton, locationScores] = getTextWithHighestFeatureScore(
+    textItems,
+    LOCATION_FEATURE_SETS
+  );
+  const [url, urlScores] = getTextWithHighestFeatureScore(
+    textItems,
+    URL_FEATURES_SETS
+  );
+  const [summary, summaryScores] = getTextWithHighestFeatureScore(
+    textItems,
+    SUMMARY_FEATURE_SETS,
+    undefined,
+    true
+  );
+
+  const summaryLines = getSectionLinesByKeywords(sections, ["summary"]);
+  const summarySection = summaryLines
+    .flat()
+    .map((textItem) => textItem.text)
+    .join(" ");
+
+  const objectiveLines = getSectionLinesByKeywords(sections, ["objective"]);
+  const objectiveSection = objectiveLines
+    .flat()
+    .map((textItem) => textItem.text)
+    .join(" ");
+
+  return {
+    profile: {
+      name,
+      email,
+      phone,
+      location,
+      url,
+      summary: summarySection || objectiveSection,
+    },
+    profileScores: {
+      name: nameScores,
+      email: emailScores,
+      phone: phoneScores,
+      location: locationScores,
+      url: urlScores,
+      summary: summaryScores,
+    },
+  };
 };

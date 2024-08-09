@@ -1,10 +1,29 @@
+import { isBold } from "../../group-lines-into-sections";
 import { Line, Lines, Subsections } from "../../types";
 
-export const divideSectionIntoSubsection = (lines: Lines): Subsections => {};
+export const divideSectionIntoSubsection = (lines: Lines): Subsections => {
+  const isLineNewSubsectionByLineGap =
+    createIsLineNewSubsectionByLineGap(lines);
+
+  let subsections = createSubsections(lines, isLineNewSubsectionByLineGap);
+
+  if (subsections.length === 1) {
+    const isLineNewSubsectionByBold = (line: Line, prevLine: Line) => {
+      if (isBold(prevLine[0]) && isBold(line[0])) {
+        return true;
+      }
+      return false;
+    };
+    subsections = createSubsections(lines, isLineNewSubsectionByBold);
+  }
+  return subsections;
+};
 
 type IsLinenewSubsection = (line: Line, prevLine: Line) => boolean;
 
-const IsLineNewSubsectionByLineGap = (lines: Lines): IsLinenewSubsection => {
+const createIsLineNewSubsectionByLineGap = (
+  lines: Lines
+): IsLinenewSubsection => {
   const lineGapToCount: { [lineGap: number]: number } = {};
   const linesY = lines.map((line) => line[0].y);
 
@@ -27,4 +46,29 @@ const IsLineNewSubsectionByLineGap = (lines: Lines): IsLinenewSubsection => {
   };
 
   return isLineNewSubsection;
+};
+
+const createSubsections = (
+  lines: Lines,
+  isLineNewSubSection: IsLinenewSubsection
+): Subsections => {
+  const subsections: Subsections = [];
+  let subsection: Lines = [];
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    if (i === 0) {
+      subsection.push(line);
+      continue;
+    }
+    if (isLineNewSubSection(line, lines[i - 1])) {
+      subsections.push(subsection);
+      subsection = [];
+    }
+    subsection.push(line);
+  }
+  if (subsection.length > 0) {
+    subsections.push(subsection);
+  }
+  return subsections;
 };

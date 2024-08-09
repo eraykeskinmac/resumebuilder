@@ -1,5 +1,6 @@
 import { ResumeWorkExperience } from "../redux/types";
 import { getSectionLinesByKeywords } from "./extract-resume-from-sections/lib/get-section-lines";
+import { divideSectionIntoSubsection } from "./extract-resume-from-sections/lib/subsection";
 import { ResumeSectionToLines } from "./types";
 
 const WORK_EXPERIENCE_KEYWORDS_LOWERCASE = [
@@ -27,4 +28,10 @@ export const extractWorkExperince = (sections: ResumeSectionToLines) => {
     sections,
     WORK_EXPERIENCE_KEYWORDS_LOWERCASE
   );
+
+  const subsections = divideSectionIntoSubsection(lines);
+
+  for (const subsectionLines of subsections) {
+    const descriptionsLinesIdx = 
+  }
 };

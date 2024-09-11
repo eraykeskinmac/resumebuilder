@@ -1,18 +1,18 @@
-import { ResumeWorkExperience } from "../redux/types";
-import { hasNumber } from "./extract-resume-from-sections/extract-profile";
+import { ResumeWorkExperience } from "../../redux/types";
+import { hasNumber } from "./extract-profile";
 import {
   getBulletPointsFromLines,
   getDescriptionLineIdx,
-} from "./extract-resume-from-sections/lib/bullet-point";
+} from "./lib/bullet-point";
 import {
   DATE_FEATURE_SETS,
   getHasText,
-} from "./extract-resume-from-sections/lib/common-feature";
-import { getTextWithHighestFeatureScore } from "./extract-resume-from-sections/lib/feature-scoring-system";
-import { getSectionLinesByKeywords } from "./extract-resume-from-sections/lib/get-section-lines";
-import { divideSectionIntoSubsection } from "./extract-resume-from-sections/lib/subsection";
-import { isBold } from "./group-lines-into-sections";
-import { FeatureSet, ResumeSectionToLines, TextItem } from "./types";
+} from "./lib/common-feature";
+import { getTextWithHighestFeatureScore } from "./lib/feature-scoring-system";
+import { getSectionLinesByKeywords } from "./lib/get-section-lines";
+import { divideSectionIntoSubsection } from "./lib/subsection";
+import { isBold } from "../group-lines-into-sections";
+import { FeatureSet, ResumeSectionToLines, TextItem } from "../types";
 
 const WORK_EXPERIENCE_KEYWORDS_LOWERCASE = [
   "work",
